@@ -24,7 +24,7 @@ chown "$app:$app" "/var/log/$app"
 
 # Pull images (they won't be in the backup)
 pushd "$install_dir"
-    docker compose --project-name "$app" pull --quiet
+    docker-compose --project-name "$app" pull --quiet
 popd
 
 ynh_script_progression "Starting the service..."
