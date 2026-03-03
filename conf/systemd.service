@@ -9,9 +9,9 @@ RemainAfterExit=yes
 WorkingDirectory=__INSTALL_DIR__
 User=root
 
-ExecStartPre=/usr/bin/docker compose --project-name __APP__ pull --quiet
-ExecStart=/usr/bin/docker compose --project-name __APP__ up -d
-ExecStop=/usr/bin/docker compose --project-name __APP__ down
+ExecStartPre=/usr/bin/docker-compose --project-name __APP__ pull --quiet
+ExecStart=/usr/bin/docker-compose --project-name __APP__ up -d
+ExecStop=/usr/bin/docker-compose --project-name __APP__ down
 
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=append:/var/log/__APP__/__APP__.log
