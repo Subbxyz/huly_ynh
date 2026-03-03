@@ -39,6 +39,7 @@ ram.runtime = "4096M"
     sha256 = "be59d868d2fd78e5f6dc563a6821890ab636b99cb65ff0814d1f3f6c098c63ef"
     autoupdate.strategy = "latest_github_release"
 
+    [resources.system_user]
     [resources.install_dir]
     [resources.permissions]
     main.url = "/"
