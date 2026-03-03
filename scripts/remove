@@ -6,7 +6,7 @@ ynh_script_progression "Removing system configurations..."
 
 # Stop and remove Docker containers AND their anonymous volumes
 pushd "$install_dir" 2>/dev/null || true
-    docker compose --project-name "$app" down --volumes --remove-orphans 2>/dev/null || true
+    docker-compose --project-name "$app" down --volumes --remove-orphans 2>/dev/null || true
 popd
 
 # Remove Docker images to free disk space (optional but courteous)
