@@ -45,7 +45,7 @@ ynh_systemctl --service="$app" --action="start" --log_path="/var/log/$app/$app.l
 
 # Docker containers take time to initialize — wait and verify
 sleep 20
-if ! docker compose --project-name "$app" ps --format json | grep -q '"running"'; then
+if ! docker-compose --project-name "$app" ps --format json | grep -q '"running"'; then
     echo "Warning: Not all containers running immediately. Wait a few minutes." >&2
 fi
 
