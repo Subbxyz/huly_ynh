@@ -45,7 +45,7 @@ ram.runtime = "4096M"
     main.url = "/"
 
     [resources.apt]
-    packages = ["docker.io", "docker-compose-v2"]
+    packages = ["docker.io", "docker-compose"]
 
     [resources.data_dir]
     
