@@ -23,7 +23,7 @@ yunohost service add "$app" --description="$app service (Docker)" --log="/var/lo
 
 ynh_script_progression "Pulling new Docker images..."
 pushd "$install_dir"
-    docker compose --project-name "$app" pull --quiet
+    docker-compose --project-name "$app" pull --quiet
 popd
 
 ynh_script_progression "Starting the service..."
