@@ -1,0 +1,2 @@
+[tests]
+exclude = ["install.subdir"]

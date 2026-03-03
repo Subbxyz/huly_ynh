@@ -1,0 +1,52 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_script_progression "Setting up source files..."
+ynh_setup_source --dest_dir="$install_dir"
+
+ynh_script_progression "Configuring the application..."
+
+# Generate secrets
+app_secret=$(ynh_string_random --length=64)
+ynh_app_setting_set --key=app_secret --value="$app_secret"
+
+cr_password=$(ynh_string_random --length=32)
+ynh_app_setting_set --key=cr_password --value="$cr_password"
+
+redpanda_password=$(ynh_string_random --length=32)
+ynh_app_setting_set --key=redpanda_password --value="$redpanda_password"
+
+# Use the config templates instead of upstream files directly, to inject YunoHost variables
+ynh_config_add --template="compose.yml" --destination="$install_dir/compose.yml"
+ynh_config_add --template=".huly.nginx" --destination="$install_dir/.huly.nginx"
+ynh_config_add --template=".env" --destination="$install_dir/.env"
+
+# Create data directories for Docker volume mounts mapped to YNH data_dir!
+mkdir -p "$data_dir/cr_data" "$data_dir/cr_certs" "$data_dir/redpanda" "$data_dir/files" "$data_dir/elastic" "$data_dir/mongodb"
+chown -R "$app:www-data" "$data_dir"
+
+# Ensure the app user can access Docker
+usermod -aG docker "$app" 2>/dev/null || true
+
+chown -R "$app:www-data" "$install_dir"
+chmod -R 750 "$install_dir"
+
+ynh_script_progression "Adding system configurations..."
+ynh_config_add_nginx
+ynh_config_add_systemd
+yunohost service add "$app" --description="$app service (Docker)" --log="/var/log/$app/$app.log"
+
+mkdir -p "/var/log/$app"
+chown "$app:$app" "/var/log/$app"
+
+ynh_script_progression "Starting the service..."
+ynh_systemctl --service="$app" --action="start" --log_path="/var/log/$app/$app.log"
+
+# Docker containers take time to initialize — wait and verify
+sleep 20
+if ! docker compose --project-name "$app" ps --format json | grep -q '"running"'; then
+    echo "Warning: Not all containers running immediately. Wait a few minutes." >&2
+fi
+
+ynh_script_progression "Installation of $app completed"
